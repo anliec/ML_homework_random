@@ -324,11 +324,14 @@ class Analyze_Optimization_Test implements Runnable {
             }
             String lineStart = baseLine.toString();
             StringBuilder sb = new StringBuilder();
+            int i = 0;
             for (RunValue r : resultList){
                 sb.append(lineStart);
                 sb.append(r.r);
                 sb.append(",");
                 sb.append(r.t);
+                sb.append(",");
+                sb.append(i++);
                 sb.append("\n");
             }
 
