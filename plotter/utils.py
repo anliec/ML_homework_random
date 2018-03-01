@@ -2,43 +2,52 @@
 import csv
 import pandas as pd
 import numpy as np
-from collections import defaultdict, OrderedDict
+import functools
 
 # data management tools
 
 
-def consolidate_dict_data(dict_data: dict, consolidate_argx, consolidate_argy, consolidate_argz,
-                          argx_name="arg_x", argy_name="arg_y", filters=None):
+# def consolidate_dict_data(dict_data: dict, consolidate_argx, consolidate_argy, consolidate_argz,
+#                           argx_name="arg_x", argy_name="arg_y", filters=None):
+#     consolidate_dict = dict()
+#     for keys, values in dict_explore(dict_data):
+#         arg_x = keys[consolidate_argx]
+#         arg_y = keys[consolidate_argy]
+#         arg_z = keys[consolidate_argz]
+#         arg_xy = (arg_x, arg_y)
+#         if filters is None or are_keys_on_filters(keys, filters):
+#             if arg_z not in consolidate_dict:
+#                 consolidate_dict[arg_z] = dict()
+#             if arg_xy not in consolidate_dict[arg_z]:
+#                 consolidate_dict[arg_z][arg_xy] = list()
+#             consolidate_dict[arg_z][arg_xy].append(values)
+#
+#     return generate_consolidate_dict(consolidate_dict, argx_name, argy_name)
+
+
+def consolidate_array_data(array_data: pd.DataFrame, consolidate_argx, consolidate_argy, consolidate_argz,
+                           argx_name="arg_x", argy_name="arg_y", filters=None):
+    arg_x_id = array_data.columns.get_loc(consolidate_argx)
+    arg_y_id = array_data.columns.get_loc(consolidate_argy)
+    arg_z_id = array_data.columns.get_loc(consolidate_argz)
+    parsed_filters = dict()
+    if filters is not None:
+        for key, value in filters:
+            i = array_data.columns.get_loc(key)
+            parsed_filters[i] = value
+    # filtering_function = functools.partial(are_keys_on_filters, filters=parsed_filters)
     consolidate_dict = dict()
-    for keys, values in dict_explore(dict_data):
-        arg_x = keys[consolidate_argx]
-        arg_y = keys[consolidate_argy]
-        arg_z = keys[consolidate_argz]
+    for row in array_data.itertuples():  # filter(filtering_function, array_data.itertuples()):
+        arg_x = row[arg_x_id]
+        arg_y = row[arg_y_id]
+        arg_z = row[arg_z_id]
         arg_xy = (arg_x, arg_y)
-        if filters is None or are_keys_on_filters(keys, filters):
+        if filters is not None or are_keys_on_filters(row, parsed_filters):
             if arg_z not in consolidate_dict:
                 consolidate_dict[arg_z] = dict()
             if arg_xy not in consolidate_dict[arg_z]:
                 consolidate_dict[arg_z][arg_xy] = list()
-            consolidate_dict[arg_z][arg_xy].append(values)
-
-    return generate_consolidate_dict(consolidate_dict, argx_name, argy_name)
-
-
-def consolidate_array_data(array_data: pd.DataFrame, consolidate_argx, consolidate_argy, consolidate_argz,
-                           argx_name="arg_x", argy_name="arg_y"):
-    df = array_data[[consolidate_argx, consolidate_argy, consolidate_argz]]
-    consolidate_dict = dict()
-    for row in df.itertuples():
-        arg_x = row[1]
-        arg_y = row[2]
-        arg_z = row[3]
-        arg_xy = (arg_x, arg_y)
-        if arg_z not in consolidate_dict:
-            consolidate_dict[arg_z] = dict()
-        if arg_xy not in consolidate_dict[arg_z]:
-            consolidate_dict[arg_z][arg_xy] = list()
-        consolidate_dict[arg_z][arg_xy].append(row[2])
+            consolidate_dict[arg_z][arg_xy].append(row[2])
 
     return generate_consolidate_dict(consolidate_dict, argx_name, argy_name)
 
@@ -60,8 +69,8 @@ def generate_consolidate_dict(filtered_dict, argx_name, argy_name):
     return return_dict
 
 
-def are_keys_on_filters(keys, filters):
-    for key_index, key_value in filters:
+def are_keys_on_filters(keys, filters: dict):
+    for key_index, key_value in filters.items():
         try:
             if keys[key_index] not in key_value:
                 return False
@@ -97,4 +106,4 @@ def to_seaborn_dataframe(consolidate_dict, wanted_value='median', value_name='me
 
 if __name__ == '__main__':
     df = pd.read_csv("StarcraftTestErrors.csv")
-    dd = consolidate_array_data(df, "epoch", "error", "Opt_name")
+    dd = consolidate_array_data(df, "epoch", "error", "Opt_name", filters=[("Opt_name", ["SA"])])
