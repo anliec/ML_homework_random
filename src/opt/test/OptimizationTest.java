@@ -373,14 +373,6 @@ public class OptimizationTest {
         int num_runs = 10;
 
         //Four Peaks Test
-//        HashMap<String, Double> four_peaks_test_params = new HashMap<>();
-//        four_peaks_test_params.put("SA_initial_temperature",100.);
-//        four_peaks_test_params.put("SA_cooling_factor",.95);
-//        four_peaks_test_params.put("GA_population",100.);
-//        four_peaks_test_params.put("GA_mate_number",50.);
-//        four_peaks_test_params.put("GA_mutate_number",10.);
-//        four_peaks_test_params.put("MIMIC_samples",50.);
-//        four_peaks_test_params.put("MIMIC_to_keep",10.);
 
         HashMap<String, LinkedList<Double[]>> param_map = new HashMap<>();
 
@@ -417,22 +409,6 @@ public class OptimizationTest {
         int numberOfParamCombinations = (MIMICparmList.size()+RHCparmList.size()+GAparmList.size()+SAparmList.size());
         System.out.println("Testing for "+numberOfParamCombinations+" combinations of parameters");
 
-
-//        LinkedList<Double[]> parmList = new LinkedList<>();
-//        parmList.add(new Double[] {100., 95., 100., 50., 10., 50., 10.});
-//        parmList.add(new Double[] {100., 85., 150., 50., 10., 60., 10.});
-//        parmList.add(new Double[] {100., 75.,  50., 50., 10., 70., 10.});
-//        parmList.add(new Double[] {100., 65., 100., 25., 10., 40., 10.});
-//        parmList.add(new Double[] {100., 55., 150., 25., 10., 30., 10.});
-//        parmList.add(new Double[] {100., 45.,  50., 25., 10., 20., 10.});
-//
-//        parmList.add(new Double[] {100., 90., 100., 50., 20., 50., 5.});
-//        parmList.add(new Double[] {100., 80., 150., 50., 20., 60., 5.});
-//        parmList.add(new Double[] {100., 70.,  50., 50., 20., 70., 5.});
-//        parmList.add(new Double[] {100., 60., 100., 25., 20., 40., 5.});
-//        parmList.add(new Double[] {100., 50., 150., 25., 20., 30., 5.});
-//        parmList.add(new Double[] {100., 40.,  50., 25., 20., 20., 5.});
-
         int[] N = {50};
         int[] iterations = {5000, 5000, 5000, 5000};
         String[] algorithms = {"RHC", "SA", "GA", "MIMIC"};
@@ -464,17 +440,8 @@ public class OptimizationTest {
 
         }
 
-        
 
         //Traveling Salesman Problem
-//        HashMap<String, Double> tsp_test_params = new HashMap<>();
-//        tsp_test_params.put("SA_initial_temperature",1E12);
-//        tsp_test_params.put("SA_cooling_factor",.95);
-//        tsp_test_params.put("GA_population",500.);
-//        tsp_test_params.put("GA_mate_number",100.);
-//        tsp_test_params.put("GA_mutate_number",40.);
-//        tsp_test_params.put("MIMIC_samples",200.);
-//        tsp_test_params.put("MIMIC_to_keep",100.);
 
         N = new int[]{50};
         iterations = new int[]{5000, 5000, 5000, 5000};
@@ -507,14 +474,6 @@ public class OptimizationTest {
 
         
         //Knapsack Problem
-//        HashMap<String, Double> knapsack_test_params = new HashMap<>();
-//        knapsack_test_params.put("SA_initial_temperature",100.);
-//        knapsack_test_params.put("SA_cooling_factor",.995);
-//        knapsack_test_params.put("GA_population",200.);
-//        knapsack_test_params.put("GA_mate_number",150.);
-//        knapsack_test_params.put("GA_mutate_number",25.);
-//        knapsack_test_params.put("MIMIC_samples",200.);
-//        knapsack_test_params.put("MIMIC_to_keep",100.);
 
         N = new int[]{50};
         iterations = new int[]{5000, 5000, 5000, 5000};
