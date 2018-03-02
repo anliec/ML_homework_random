@@ -12,6 +12,7 @@ import util.linalg.DenseVector;
 import java.util.*;
 import java.io.*;
 import java.text.*;
+import java.util.concurrent.Semaphore;
 
 /**
  * Implementation of randomized hill climbing, simulated annealing, and genetic algorithm to
@@ -21,7 +22,7 @@ import java.text.*;
  * @author Hannah Lau
  * @version 1.0
  */
-public class AbaloneTestStarcraft {
+public class AbaloneTestStarcraft implements Runnable{
 
     public static class OA{
         public String name;
@@ -29,6 +30,8 @@ public class AbaloneTestStarcraft {
         public BackPropagationNetwork nn;
         public NeuralNetworkOptimizationProblem pb;
         public double[] errors;
+        public String res = "";
+        public Thread t;
         public OA(String oa_name, OptimizationAlgorithm opt, BackPropagationNetwork bpn, NeuralNetworkOptimizationProblem nnpb){
             name = oa_name;
             algorithm = opt;
@@ -37,8 +40,11 @@ public class AbaloneTestStarcraft {
         }
     }
 
+    public Thread t;
+    private static Semaphore runSem = new Semaphore(4);
+
 	private static String outputDir = "./OptimizationResults";
-    private static int inputLayer = 72, hiddenLayer = 35, outputLayer = 200, trainingIterations = 500;
+    private static int inputLayer = 72, outputLayer = 200, trainingIterations = 1;
     private static Instance[] instances = initializeInstances();
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
@@ -50,7 +56,31 @@ public class AbaloneTestStarcraft {
 
     private static String outFileParticule = "";
 
-    public static void main(String[] args) {
+    private OA trainingOa;
+
+    AbaloneTestStarcraft(OA oa){
+        trainingOa = oa;
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        boolean computeRHC = true, computeSA = true, computeGA = true;
+        if(args.length > 2) {
+            switch (args[2]) {
+                case "RHC":
+                    computeSA = false;
+                    computeGA = false;
+                    break;
+                case "SA":
+                    computeRHC = false;
+                    computeGA = false;
+                    break;
+                case "GA":
+                    computeRHC = false;
+                    computeSA = false;
+                    break;
+            }
+        }
         if(args.length > 1)
             outFileParticule = args[1];
         LinkedList<OA> oa_list = new LinkedList<>();
@@ -59,66 +89,76 @@ public class AbaloneTestStarcraft {
         BackPropagationNetwork network;
         NeuralNetworkOptimizationProblem nnop;
 
-        network = factory.createClassificationNetwork(new int[] {inputLayer, hiddenLayer, outputLayer});
-        nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
-        oa_list.add(new OA("RHC",
-                           new RandomizedHillClimbing(nnop),
-                           network,
-                           nnop));
-        network = factory.createClassificationNetwork(new int[] {inputLayer, hiddenLayer, outputLayer});
-        nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
-        oa_list.add(new OA("SA",
-                           new SimulatedAnnealing(100, .95, nnop),
-                           network,
-                           nnop));
-        network = factory.createClassificationNetwork(new int[] {inputLayer, hiddenLayer, outputLayer});
-        nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
-        oa_list.add(new OA("GA",
-                           new StandardGeneticAlgorithm(200, 100, 10, nnop),
-                           network,
-                           nnop));
+        LinkedList<Integer[]> hiddenLayerSizes = new LinkedList<>();
+//        hiddenLayerSizes.add(new Integer[] {});
+        hiddenLayerSizes.add(new Integer[] {5});
+//        hiddenLayerSizes.add(new Integer[] {10});
+        hiddenLayerSizes.add(new Integer[] {15});
+//        hiddenLayerSizes.add(new Integer[] {25});
+        hiddenLayerSizes.add(new Integer[] {35});
+//        hiddenLayerSizes.add(new Integer[] {20, 10});
+        hiddenLayerSizes.add(new Integer[] {30, 10});
 
-        for(OA oa : oa_list) {
-            double start = System.currentTimeMillis(), end, trainingTime, testingTime, correct = 0, incorrect = 0;
-            train(oa); //trainer.train();
-            end = System.currentTimeMillis();
-            trainingTime = end - start;
-            trainingTime /= 1000;
+        // for each size of NN generate a model to train
+        for(Integer[] hiddenLayerShape : hiddenLayerSizes) {
+            int[] nnLayer = new int[2 + hiddenLayerShape.length];
+            nnLayer[0] = inputLayer;
+            for (int i = 1; i < 1 + hiddenLayerShape.length; i++)
+                nnLayer[i] = hiddenLayerShape[i - 1];
+            nnLayer[1 + hiddenLayerShape.length] = outputLayer;
 
-            Instance optimalInstance = oa.algorithm.getOptimal();
-            oa.nn.setWeights(optimalInstance.getData());
-
-            int predicted, actual;
-            start = System.currentTimeMillis();
-            for(Instance ins : instances) {
-                oa.nn.setInputValues(ins.getData());
-                oa.nn.run();
-
-                actual = ins.getLabel().getData().argMax();
-                predicted = oa.nn.getOutputValues().argMax();
-
-                if(actual == predicted)
-                    correct++;
-                else
-                    incorrect++;
+            //RHC
+            if(computeRHC) {
+                network = factory.createClassificationNetwork(nnLayer);
+                nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
+                oa_list.add(new OA("RHC",
+                        new RandomizedHillClimbing(nnop),
+                        network,
+                        nnop));
             }
-            end = System.currentTimeMillis();
-            testingTime = end - start;
-            testingTime /= 1000;
 
-            String res = "\nResults for " + oa.name + ": \nCorrectly classified " + correct + " instances." +
-                    "\nIncorrectly classified " + incorrect + " instances.\nPercent correctly classified: "
-                    + df.format(correct/(correct+incorrect)*100) + "%\nTraining time: " + df.format(trainingTime)
-                    + " seconds\nTesting time: " + df.format(testingTime) + " seconds\n";
-            results.append(res);
+            //SA
+            if (computeSA){
+                for (double it = 50; it < 200.0; it += 50.0) {
+                    for (double cooling = 0.5; cooling < 1.0; cooling += 0.1) {
+                        network = factory.createClassificationNetwork(nnLayer);
+                        nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
+                        oa_list.add(new OA("SA",
+                                new SimulatedAnnealing(it, cooling, nnop),
+                                network,
+                                nnop));
+                    }
+                }
+            }
+
+            //GA
+            if(computeGA) {
+                for (int pop = 50; pop < 600; pop += 100) {
+                    for (int toMate = 30; toMate < (pop/2); toMate += 50) {
+                        for (int toMutate = 10; toMutate < (toMate/2); toMutate += 25) {
+                            network = factory.createClassificationNetwork(nnLayer);
+                            nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
+                            oa_list.add(new OA("GA",
+                                    new StandardGeneticAlgorithm(pop, toMate, toMutate, nnop),
+                                    network,
+                                    nnop));
+                        }
+                    }
+                }
+            }
         }
-        Utils.writeOutputToFile(outputDir, "StarcraftTest" + outFileParticule + ".csv", results.toString());
-        System.out.println(results);
 
-        //write errors to csv file
-        StringBuilder sb = new StringBuilder();
-        sb.append("Opt_name, nn_shape, t, cooling, population_size, toMate, toMutate, epoch, error\n");
+        System.out.println("Trainning "+oa_list.size()+" different instances");
+
         for(OA oa : oa_list) {
+            AbaloneTestStarcraft trainner = new AbaloneTestStarcraft(oa);
+            trainner.start();
+        }
+        for(OA oa : oa_list){
+            oa.t.join();
+
+            //write errors to csv file
+            StringBuilder sb = new StringBuilder();
             StringBuilder baseLine = new StringBuilder();
             baseLine.append(oa.name);
             baseLine.append(",");
@@ -156,8 +196,9 @@ public class AbaloneTestStarcraft {
                 sb.append(e);
                 sb.append('\n');
             }
+            Utils.writeOutputToFile(outputDir, "StarcraftTest" + outFileParticule + ".csv", results.toString());
+            Utils.writeOutputToFile(outputDir, "StarcraftTestErrors" + outFileParticule + ".csv", sb.toString());
         }
-        Utils.writeOutputToFile(outputDir, "StarcraftTestErrors" + outFileParticule + ".csv", sb.toString());
     }
 
     
@@ -165,17 +206,6 @@ public class AbaloneTestStarcraft {
         oa.errors = new double[trainingIterations];
         for(int i = 0; i < trainingIterations; i++) {
             oa.errors[i] = oa.algorithm.train();
-
-//            oa.errors[i] = 0;
-//            for(Instance ins : instances) {
-//                oa.nn.setInputValues(ins.getData());
-//                oa.nn.run();
-//
-//                Instance output = ins.getLabel(), example = new Instance(oa.nn.getOutputValues());
-//                System.out.println(oa.nn.getOutputValues().toString());
-//                example.setLabel(new Instance(Double.parseDouble(oa.nn.getOutputValues().toString())));
-//                oa.errors[i] += measure.value(output, example);
-//            }
         }
     }
 
@@ -226,5 +256,56 @@ public class AbaloneTestStarcraft {
         instances_array = instances.toArray(instances_array);
 
         return instances_array;
+    }
+
+    @Override
+    public void run() {
+        try {
+            runSem.acquire();
+            double start = System.currentTimeMillis(), end, trainingTime, testingTime, correct = 0, incorrect = 0;
+            train(trainingOa);
+            end = System.currentTimeMillis();
+            trainingTime = end - start;
+            trainingTime /= 1000;
+
+            Instance optimalInstance = trainingOa.algorithm.getOptimal();
+            trainingOa.nn.setWeights(optimalInstance.getData());
+
+            int predicted, actual;
+            start = System.currentTimeMillis();
+            for (Instance ins : instances) {
+                trainingOa.nn.setInputValues(ins.getData());
+                trainingOa.nn.run();
+
+                actual = ins.getLabel().getData().argMax();
+                predicted = trainingOa.nn.getOutputValues().argMax();
+
+                if (actual == predicted)
+                    correct++;
+                else
+                    incorrect++;
+            }
+            end = System.currentTimeMillis();
+            testingTime = end - start;
+            testingTime /= 1000;
+
+            trainingOa.res = "\nResults for " + trainingOa.name + ": \nCorrectly classified " + correct + " instances." +
+                    "\nIncorrectly classified " + incorrect + " instances.\nPercent correctly classified: "
+                    + df.format(correct / (correct + incorrect) * 100) + "%\nTraining time: " + df.format(trainingTime)
+                    + " seconds\nTesting time: " + df.format(testingTime) + " seconds\n";
+            runSem.release();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void start () {
+        if (t == null)
+        {
+            t = new Thread (this);
+            t.start ();
+            trainingOa.t = t;
+        }
     }
 }
