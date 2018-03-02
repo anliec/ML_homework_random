@@ -383,19 +383,19 @@ public class OptimizationTest {
         four_peaks_test_params.put("MIMIC_to_keep",10.);
 
         LinkedList<Double[]> parmList = new LinkedList<>();
-        parmList.add(new Double[] {200., 95., 100., 42., 10., 50., 20.});
-        parmList.add(new Double[] {200., 85., 150., 42., 10., 60., 20.});
-        parmList.add(new Double[] {200., 75.,  50., 42., 10., 70., 20.});
-        parmList.add(new Double[] {200., 65., 100., 35., 10., 40., 20.});
-        parmList.add(new Double[] {200., 55., 150., 35., 10., 30., 20.});
-        parmList.add(new Double[] {200., 45.,  50., 35., 10., 20., 20.});
+        parmList.add(new Double[] {100., 95., 100., 50., 10., 50., 10.});
+        parmList.add(new Double[] {100., 85., 150., 50., 10., 60., 10.});
+        parmList.add(new Double[] {100., 75.,  50., 50., 10., 70., 10.});
+        parmList.add(new Double[] {100., 65., 100., 25., 10., 40., 10.});
+        parmList.add(new Double[] {100., 55., 150., 25., 10., 30., 10.});
+        parmList.add(new Double[] {100., 45.,  50., 25., 10., 20., 10.});
 
-        parmList.add(new Double[] {200., 90., 100., 42., 20., 50., 15.});
-        parmList.add(new Double[] {200., 80., 150., 42., 20., 60., 15.});
-        parmList.add(new Double[] {200., 70.,  50., 42., 20., 70., 15.});
-        parmList.add(new Double[] {200., 60., 100., 35., 20., 40., 15.});
-        parmList.add(new Double[] {200., 50., 150., 35., 20., 30., 15.});
-        parmList.add(new Double[] {200., 40.,  50., 35., 20., 20., 15.});
+        parmList.add(new Double[] {100., 90., 100., 50., 20., 50., 5.});
+        parmList.add(new Double[] {100., 80., 150., 50., 20., 60., 5.});
+        parmList.add(new Double[] {100., 70.,  50., 50., 20., 70., 5.});
+        parmList.add(new Double[] {100., 60., 100., 25., 20., 40., 5.});
+        parmList.add(new Double[] {100., 50., 150., 25., 20., 30., 5.});
+        parmList.add(new Double[] {100., 40.,  50., 25., 20., 20., 5.});
 
         int[] N = {50};
         int[] iterations = {5000, 5000, 5000, 5000};
