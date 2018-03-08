@@ -65,8 +65,9 @@ public class AbaloneTestStarcraft implements Runnable{
 
     public static void main(String[] args) throws InterruptedException {
         boolean computeRHC = true, computeSA = true, computeGA = true;
-        if(args.length > 2) {
-            switch (args[2]) {
+        if(args.length >= 2) {
+            System.out.println(args[1] + " selected");
+            switch (args[1]) {
                 case "RHC":
                     computeSA = false;
                     computeGA = false;
@@ -81,7 +82,7 @@ public class AbaloneTestStarcraft implements Runnable{
                     break;
             }
         }
-        if(args.length > 1)
+        if(args.length >= 1)
             outFileParticule = args[1];
         LinkedList<OA> oa_list = new LinkedList<>();
 
@@ -99,6 +100,8 @@ public class AbaloneTestStarcraft implements Runnable{
 //        hiddenLayerSizes.add(new Integer[] {20, 10});
         hiddenLayerSizes.add(new Integer[] {30, 10});
 
+//        int count=0;
+
         // for each size of NN generate a model to train
         for(Integer[] hiddenLayerShape : hiddenLayerSizes) {
             int[] nnLayer = new int[2 + hiddenLayerShape.length];
@@ -115,6 +118,7 @@ public class AbaloneTestStarcraft implements Runnable{
                         new RandomizedHillClimbing(nnop),
                         network,
                         nnop));
+//                count++;
             }
 
             //SA
@@ -127,27 +131,30 @@ public class AbaloneTestStarcraft implements Runnable{
                                 new SimulatedAnnealing(it, cooling, nnop),
                                 network,
                                 nnop));
+//                        count++;
                     }
                 }
             }
 
             //GA
             if(computeGA) {
-                for (int pop = 50; pop < 600; pop += 100) {
-                    for (int toMate = 30; toMate < (pop/2); toMate += 50) {
-                        for (int toMutate = 10; toMutate < (toMate/2); toMutate += 25) {
+                for (int pop = 50; pop < 700; pop += 200) {
+                    for (int toMate = 30; toMate < (pop/2); toMate += 100) {
+                        for (int toMutate = 10; toMutate < (toMate/2); toMutate += 50) {
                             network = factory.createClassificationNetwork(nnLayer);
                             nnop = new NeuralNetworkOptimizationProblem(set, network, measure);
                             oa_list.add(new OA("GA",
                                     new StandardGeneticAlgorithm(pop, toMate, toMutate, nnop),
                                     network,
                                     nnop));
+//                            count++;
                         }
                     }
                 }
             }
         }
 
+//        System.out.println("Trainning "+count+" different instances");
         System.out.println("Trainning "+oa_list.size()+" different instances");
 
         for(OA oa : oa_list) {
