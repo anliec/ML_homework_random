@@ -30,6 +30,8 @@ public class AbaloneTestStarcraft implements Runnable{
         public BackPropagationNetwork nn;
         public NeuralNetworkOptimizationProblem pb;
         public double[] errors;
+        public double[] test_errors;
+        public double[] times;
         public String res = "";
         public Thread t;
         public OA(String oa_name, OptimizationAlgorithm opt, BackPropagationNetwork bpn, NeuralNetworkOptimizationProblem nnpb){
@@ -45,12 +47,14 @@ public class AbaloneTestStarcraft implements Runnable{
 
 	private static String outputDir = "./OptimizationResults";
     private static int inputLayer = 72, outputLayer = 200, trainingIterations = 10000;
-    private static Instance[] instances = initializeInstances();
+    private static Instance[] instances = initializeInstances("data/starcraft_x_train.csv", "data/starcraft_y_train.csv");
+    private static Instance[] test_instances = initializeInstances("data/starcraft_x_test.csv", "data/starcraft_y_test.csv");
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
     private static ErrorMeasure measure = new SumOfSquaresError();
 
     private static DataSet set = new DataSet(instances);
+    private static DataSet test_set = new DataSet(test_instances);
 
     private static DecimalFormat df = new DecimalFormat("0.000");
 
@@ -83,10 +87,9 @@ public class AbaloneTestStarcraft implements Runnable{
             }
         }
         if(args.length >= 1)
-            outFileParticule = args[1];
+            outFileParticule = args[0];
         LinkedList<OA> oa_list = new LinkedList<>();
 
-        StringBuffer results = new StringBuffer();
         BackPropagationNetwork network;
         NeuralNetworkOptimizationProblem nnop;
 
@@ -196,14 +199,17 @@ public class AbaloneTestStarcraft implements Runnable{
             }
             String line_start = baseLine.toString();
             for (int i=0 ; i < oa.errors.length ; i++) {
-                double e = oa.errors[i];
                 sb.append(line_start);
                 sb.append(i);
                 sb.append(", ");
-                sb.append(e);
+                sb.append(oa.errors[i]);
+                sb.append(", ");
+                sb.append(oa.test_errors[i]);
+                sb.append(", ");
+                sb.append(oa.times[i]);
                 sb.append('\n');
             }
-            Utils.writeOutputToFile(outputDir, "StarcraftTest" + outFileParticule + ".csv", results.toString());
+            Utils.writeOutputToFile(outputDir, "StarcraftTest" + outFileParticule + ".csv", oa.res);
             Utils.writeOutputToFile(outputDir, "StarcraftTestErrors" + outFileParticule + ".csv", sb.toString());
         }
     }
@@ -211,16 +217,57 @@ public class AbaloneTestStarcraft implements Runnable{
     
     private static void train(OA oa) {
         oa.errors = new double[trainingIterations];
+        oa.times = new double[trainingIterations];
+        oa.test_errors = new double[trainingIterations];
+
+        double old_time = 0.0;
         for(int i = 0; i < trainingIterations; i++) {
-            oa.errors[i] = oa.algorithm.train();
+            double start = System.nanoTime();
+            oa.algorithm.train();
+            old_time += start - System.nanoTime();
+            oa.times[i] = old_time;
+
+            int predicted, actual;
+            int correct = 0, incorrect = 0;
+            for (Instance ins : instances) {
+                oa.nn.setInputValues(ins.getData());
+                oa.nn.run();
+
+                actual = ins.getLabel().getData().argMax();
+                predicted = oa.nn.getOutputValues().argMax();
+
+                if (actual == predicted)
+                    correct++;
+                else
+                    incorrect++;
+            }
+            oa.errors[i] = correct / instances.length;
+
+            correct = 0;
+            incorrect = 0;
+            for (Instance ins : test_instances) {
+                oa.nn.setInputValues(ins.getData());
+                oa.nn.run();
+
+                actual = ins.getLabel().getData().argMax();
+                predicted = oa.nn.getOutputValues().argMax();
+
+                if (actual == predicted)
+                    correct++;
+                else
+                    incorrect++;
+            }
+            oa.test_errors[i] = correct / instances.length;
         }
     }
 
-    private static Instance[] initializeInstances() {
+    private static Instance[] initializeInstances(String x_value_path, String y_value_path) {
         LinkedList<Instance> instances = new LinkedList<>();
         try {
-            FileReader y_train_file = new FileReader("data/starcraft_y_train.csv");
-            FileReader x_train_file = new FileReader("data/starcraft_x_train.csv");
+//            FileReader y_train_file = new FileReader("data/starcraft_y_train.csv");
+//            FileReader x_train_file = new FileReader("data/starcraft_x_train.csv");
+            FileReader y_train_file = new FileReader(x_value_path);
+            FileReader x_train_file = new FileReader(y_value_path);
             BufferedReader y_train_br = new BufferedReader(y_train_file);
             BufferedReader x_train_br = new BufferedReader(x_train_file);
 
