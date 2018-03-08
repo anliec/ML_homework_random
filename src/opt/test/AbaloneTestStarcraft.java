@@ -215,7 +215,7 @@ public class AbaloneTestStarcraft implements Runnable{
     }
 
     
-    private static void train(OA oa) {
+    private void train(OA oa) {
         oa.errors = new double[trainingIterations];
         oa.times = new double[trainingIterations];
         oa.test_errors = new double[trainingIterations];
@@ -228,7 +228,7 @@ public class AbaloneTestStarcraft implements Runnable{
             oa.times[i] = old_time;
 
             int predicted, actual;
-            int correct = 0, incorrect = 0;
+            int correct = 0;
             for (Instance ins : instances) {
                 oa.nn.setInputValues(ins.getData());
                 oa.nn.run();
@@ -238,13 +238,10 @@ public class AbaloneTestStarcraft implements Runnable{
 
                 if (actual == predicted)
                     correct++;
-                else
-                    incorrect++;
             }
             oa.errors[i] = correct / instances.length;
 
             correct = 0;
-            incorrect = 0;
             for (Instance ins : test_instances) {
                 oa.nn.setInputValues(ins.getData());
                 oa.nn.run();
@@ -254,10 +251,8 @@ public class AbaloneTestStarcraft implements Runnable{
 
                 if (actual == predicted)
                     correct++;
-                else
-                    incorrect++;
             }
-            oa.test_errors[i] = correct / instances.length;
+            oa.test_errors[i] = correct / test_instances.length;
         }
     }
 
@@ -266,8 +261,8 @@ public class AbaloneTestStarcraft implements Runnable{
         try {
 //            FileReader y_train_file = new FileReader("data/starcraft_y_train.csv");
 //            FileReader x_train_file = new FileReader("data/starcraft_x_train.csv");
-            FileReader y_train_file = new FileReader(x_value_path);
-            FileReader x_train_file = new FileReader(y_value_path);
+            FileReader y_train_file = new FileReader(y_value_path);
+            FileReader x_train_file = new FileReader(x_value_path);
             BufferedReader y_train_br = new BufferedReader(y_train_file);
             BufferedReader x_train_br = new BufferedReader(x_train_file);
 
