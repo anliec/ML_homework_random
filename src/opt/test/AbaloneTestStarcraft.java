@@ -44,7 +44,7 @@ public class AbaloneTestStarcraft implements Runnable{
     private static Semaphore runSem = new Semaphore(4);
 
 	private static String outputDir = "./OptimizationResults";
-    private static int inputLayer = 72, outputLayer = 200, trainingIterations = 1;
+    private static int inputLayer = 72, outputLayer = 200, trainingIterations = 10000;
     private static Instance[] instances = initializeInstances();
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
