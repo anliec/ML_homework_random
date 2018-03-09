@@ -212,6 +212,7 @@ public class AbaloneTestStarcraft implements Runnable{
             Utils.writeOutputToFile(outputDir, "StarcraftTest" + outFileParticule + ".csv", oa.res);
             Utils.writeOutputToFile(outputDir, "StarcraftTestErrors" + outFileParticule + ".csv", sb.toString());
         }
+        System.out.println("Finished !");
     }
 
     
