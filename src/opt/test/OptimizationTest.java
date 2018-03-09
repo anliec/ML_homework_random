@@ -207,6 +207,16 @@ class Analyze_Optimization_Test implements Runnable {
                     cf = new SingleCrossOver();
                     df = new DiscreteDependencyTree(.1, ranges);
                     break;
+                case "flip_flop":
+                    ranges = new int[N];
+                    Arrays.fill(ranges, 2);
+                    ef = new FlipFlopEvaluationFunction();
+                    odd = new DiscreteUniformDistribution(ranges);
+                    nf = new DiscreteChangeOneNeighbor(ranges);
+                    mf = new DiscreteChangeOneMutation(ranges);
+                    cf = new SingleCrossOver();
+                    df = new DiscreteDependencyTree(.1, ranges);
+                    break;
                 case "tsp":
 					ranges = new int[N];
 					Arrays.fill(ranges, N);
@@ -373,7 +383,6 @@ class Analyze_Optimization_Test implements Runnable {
     }
 }
 
-
 public class OptimizationTest {
 
     public static void main(String[] args) {
@@ -482,7 +491,7 @@ public class OptimizationTest {
 //            }
 //        }
 
-        
+
         //Knapsack Problem
 
 //        N = new int[]{50};
@@ -547,6 +556,37 @@ public class OptimizationTest {
 
         // Continuous Peaks
 
+//        N = new int[]{50};
+//        iterations = new int[]{5000, 5000, 5000, 5000};
+//        for (int i = 0; i < algorithms.length; i++) {
+//            for( Double[] param : param_map.get(algorithms[i])){
+//                HashMap<String, Double> params = new HashMap<>();
+//                params.put("SA_initial_temperature", param[0]);
+//                params.put("SA_cooling_factor", param[1]);
+//                params.put("GA_population", param[2]);
+//                params.put("GA_mate_number", param[3]);
+//                params.put("GA_mutate_number", param[4]);
+//                params.put("MIMIC_samples", param[5]);
+//                params.put("MIMIC_to_keep", param[6]);
+//                for (int j = 0; j < N.length; j++) {
+//                    for (int l = 0; l < num_runs; l++) {
+//                        new Analyze_Optimization_Test(
+//                                "continuous_peaks",
+//                                algorithms[i],
+//                                iterations[i],
+//                                params,
+//                                N[j],
+//                                N[j] / 5,
+//                                other_params,
+//                                l
+//                        ).start();
+//                    }
+//                }
+//            }
+//        }
+
+        // Flip Flop
+
         N = new int[]{50};
         iterations = new int[]{5000, 5000, 5000, 5000};
         for (int i = 0; i < algorithms.length; i++) {
@@ -562,7 +602,7 @@ public class OptimizationTest {
                 for (int j = 0; j < N.length; j++) {
                     for (int l = 0; l < num_runs; l++) {
                         new Analyze_Optimization_Test(
-                                "continuous_peaks",
+                                "flip_flop",
                                 algorithms[i],
                                 iterations[i],
                                 params,
@@ -575,6 +615,9 @@ public class OptimizationTest {
                 }
             }
         }
+
+
         System.out.println("Finished !");
     }
 }
+
