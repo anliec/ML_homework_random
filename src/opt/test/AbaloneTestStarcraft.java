@@ -31,7 +31,7 @@ public class AbaloneTestStarcraft implements Runnable{
         public NeuralNetworkOptimizationProblem pb;
         public double[] errors;
         public double[] test_errors;
-        public double[] times;
+        public long[] times;
         public String res = "";
         public Thread t;
         public OA(String oa_name, OptimizationAlgorithm opt, BackPropagationNetwork bpn, NeuralNetworkOptimizationProblem nnpb){
@@ -217,14 +217,14 @@ public class AbaloneTestStarcraft implements Runnable{
     
     private void train(OA oa) {
         oa.errors = new double[trainingIterations];
-        oa.times = new double[trainingIterations];
+        oa.times = new long[trainingIterations];
         oa.test_errors = new double[trainingIterations];
 
-        double old_time = 0.0;
+        long old_time = 0;
         for(int i = 0; i < trainingIterations; i++) {
-            double start = System.nanoTime();
+            long start = System.nanoTime();
             oa.algorithm.train();
-            old_time += start - System.nanoTime();
+            old_time += System.nanoTime() - start;
             oa.times[i] = old_time;
 
             int predicted, actual;
@@ -239,7 +239,7 @@ public class AbaloneTestStarcraft implements Runnable{
                 if (actual == predicted)
                     correct++;
             }
-            oa.errors[i] = correct / instances.length;
+            oa.errors[i] = ((double) correct) / ((double) instances.length);
 
             correct = 0;
             for (Instance ins : test_instances) {
@@ -252,7 +252,7 @@ public class AbaloneTestStarcraft implements Runnable{
                 if (actual == predicted)
                     correct++;
             }
-            oa.test_errors[i] = correct / test_instances.length;
+            oa.test_errors[i] = ((double) correct) / ((double) test_instances.length);
         }
     }
 
