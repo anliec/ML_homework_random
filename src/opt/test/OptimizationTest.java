@@ -431,159 +431,159 @@ public class OptimizationTest {
         int[] N = {50};
         int[] iterations = {5000, 5000, 5000, 5000};
         String[] algorithms = {"RHC", "SA", "GA", "MIMIC"};
-//        for (int i = 0; i < algorithms.length; i++) {
-//            for( Double[] param : param_map.get(algorithms[i])){
-//                HashMap<String, Double> params = new HashMap<>();
-//                params.put("SA_initial_temperature",param[0]);
-//                params.put("SA_cooling_factor",param[1]);
-//                params.put("GA_population",param[2]);
-//                params.put("GA_mate_number",param[3]);
-//                params.put("GA_mutate_number",param[4]);
-//                params.put("MIMIC_samples",param[5]);
-//                params.put("MIMIC_to_keep",param[6]);
-//                for (int j = 0; j < N.length; j++) {
-//                    for (int l = 0; l < num_runs; l++) {
-//                        new Analyze_Optimization_Test(
-//                                "four_peaks",
-//                                algorithms[i],
-//                                iterations[i],
-//                                params,
-//                                N[j],
-//                                N[j]/5,
-//                                other_params,
-//                                l
-//                        ).start();
-//                    }
-//                }
-//            }
-//
-//        }
+        for (int i = 0; i < algorithms.length; i++) {
+            for( Double[] param : param_map.get(algorithms[i])){
+                HashMap<String, Double> params = new HashMap<>();
+                params.put("SA_initial_temperature",param[0]);
+                params.put("SA_cooling_factor",param[1]);
+                params.put("GA_population",param[2]);
+                params.put("GA_mate_number",param[3]);
+                params.put("GA_mutate_number",param[4]);
+                params.put("MIMIC_samples",param[5]);
+                params.put("MIMIC_to_keep",param[6]);
+                for (int j = 0; j < N.length; j++) {
+                    for (int l = 0; l < num_runs; l++) {
+                        new Analyze_Optimization_Test(
+                                "four_peaks",
+                                algorithms[i],
+                                iterations[i],
+                                params,
+                                N[j],
+                                N[j]/5,
+                                other_params,
+                                l
+                        ).start();
+                    }
+                }
+            }
+
+        }
 
 
         //Traveling Salesman Problem
 
-//        N = new int[]{50};
-//        iterations = new int[]{5000, 5000, 5000, 5000};
-//        for (int i = 0; i < algorithms.length; i++) {
-//            for( Double[] param : param_map.get(algorithms[i])){
-//                HashMap<String, Double> params = new HashMap<>();
-//                params.put("SA_initial_temperature", param[0]);
-//                params.put("SA_cooling_factor", param[1]);
-//                params.put("GA_population", param[2]);
-//                params.put("GA_mate_number", param[3]);
-//                params.put("GA_mutate_number", param[4]);
-//                params.put("MIMIC_samples", param[5]);
-//                params.put("MIMIC_to_keep", param[6]);
-//                for (int j = 0; j < N.length; j++) {
-//                    for (int l = 0; l < num_runs; l++) {
-//                        new Analyze_Optimization_Test(
-//                                "tsp",
-//                                algorithms[i],
-//                                iterations[i],
-//                                params,
-//                                N[j],
-//                                N[j] / 5,
-//                                other_params,
-//                                l
-//                        ).start();
-//                    }
-//                }
-//            }
-//        }
+        N = new int[]{50};
+        iterations = new int[]{5000, 5000, 5000, 5000};
+        for (int i = 0; i < algorithms.length; i++) {
+            for( Double[] param : param_map.get(algorithms[i])){
+                HashMap<String, Double> params = new HashMap<>();
+                params.put("SA_initial_temperature", param[0]);
+                params.put("SA_cooling_factor", param[1]);
+                params.put("GA_population", param[2]);
+                params.put("GA_mate_number", param[3]);
+                params.put("GA_mutate_number", param[4]);
+                params.put("MIMIC_samples", param[5]);
+                params.put("MIMIC_to_keep", param[6]);
+                for (int j = 0; j < N.length; j++) {
+                    for (int l = 0; l < num_runs; l++) {
+                        new Analyze_Optimization_Test(
+                                "tsp",
+                                algorithms[i],
+                                iterations[i],
+                                params,
+                                N[j],
+                                N[j] / 5,
+                                other_params,
+                                l
+                        ).start();
+                    }
+                }
+            }
+        }
 
 
         //Knapsack Problem
 
-//        N = new int[]{50};
-//        iterations = new int[]{5000, 5000, 5000, 5000};
-//        for (int i = 0; i < algorithms.length; i++) {
-//            for( Double[] param : param_map.get(algorithms[i])){
-//                HashMap<String, Double> params = new HashMap<>();
-//                params.put("SA_initial_temperature", param[0]);
-//                params.put("SA_cooling_factor", param[1]);
-//                params.put("GA_population", param[2]);
-//                params.put("GA_mate_number", param[3]);
-//                params.put("GA_mutate_number", param[4]);
-//                params.put("MIMIC_samples", param[5]);
-//                params.put("MIMIC_to_keep", param[6]);
-//                for (int j = 0; j < N.length; j++) {
-//                    for (int l = 0; l < num_runs; l++) {
-//                        new Analyze_Optimization_Test(
-//                                "count_ones",
-//                                algorithms[i],
-//                                iterations[i],
-//                                params,
-//                                N[j],
-//                                N[j] / 5,
-//                                other_params,
-//                                l
-//                        ).start();
-//                    }
-//                }
-//            }
-//        }
+        N = new int[]{50};
+        iterations = new int[]{5000, 5000, 5000, 5000};
+        for (int i = 0; i < algorithms.length; i++) {
+            for( Double[] param : param_map.get(algorithms[i])){
+                HashMap<String, Double> params = new HashMap<>();
+                params.put("SA_initial_temperature", param[0]);
+                params.put("SA_cooling_factor", param[1]);
+                params.put("GA_population", param[2]);
+                params.put("GA_mate_number", param[3]);
+                params.put("GA_mutate_number", param[4]);
+                params.put("MIMIC_samples", param[5]);
+                params.put("MIMIC_to_keep", param[6]);
+                for (int j = 0; j < N.length; j++) {
+                    for (int l = 0; l < num_runs; l++) {
+                        new Analyze_Optimization_Test(
+                                "count_ones",
+                                algorithms[i],
+                                iterations[i],
+                                params,
+                                N[j],
+                                N[j] / 5,
+                                other_params,
+                                l
+                        ).start();
+                    }
+                }
+            }
+        }
 
         // Nqueens
 
-//        N = new int[]{50};
-//        iterations = new int[]{5000, 5000, 5000, 5000};
-//        for (int i = 0; i < algorithms.length; i++) {
-//            for( Double[] param : param_map.get(algorithms[i])){
-//                HashMap<String, Double> params = new HashMap<>();
-//                params.put("SA_initial_temperature", param[0]);
-//                params.put("SA_cooling_factor", param[1]);
-//                params.put("GA_population", param[2]);
-//                params.put("GA_mate_number", param[3]);
-//                params.put("GA_mutate_number", param[4]);
-//                params.put("MIMIC_samples", param[5]);
-//                params.put("MIMIC_to_keep", param[6]);
-//                for (int j = 0; j < N.length; j++) {
-//                    for (int l = 0; l < num_runs; l++) {
-//                        new Analyze_Optimization_Test(
-//                                "nqueens",
-//                                algorithms[i],
-//                                iterations[i],
-//                                params,
-//                                N[j],
-//                                N[j] / 5,
-//                                other_params,
-//                                l
-//                        ).start();
-//                    }
-//                }
-//            }
-//        }
+        N = new int[]{50};
+        iterations = new int[]{5000, 5000, 5000, 5000};
+        for (int i = 0; i < algorithms.length; i++) {
+            for( Double[] param : param_map.get(algorithms[i])){
+                HashMap<String, Double> params = new HashMap<>();
+                params.put("SA_initial_temperature", param[0]);
+                params.put("SA_cooling_factor", param[1]);
+                params.put("GA_population", param[2]);
+                params.put("GA_mate_number", param[3]);
+                params.put("GA_mutate_number", param[4]);
+                params.put("MIMIC_samples", param[5]);
+                params.put("MIMIC_to_keep", param[6]);
+                for (int j = 0; j < N.length; j++) {
+                    for (int l = 0; l < num_runs; l++) {
+                        new Analyze_Optimization_Test(
+                                "nqueens",
+                                algorithms[i],
+                                iterations[i],
+                                params,
+                                N[j],
+                                N[j] / 5,
+                                other_params,
+                                l
+                        ).start();
+                    }
+                }
+            }
+        }
 
         // Continuous Peaks
 
-//        N = new int[]{50};
-//        iterations = new int[]{5000, 5000, 5000, 5000};
-//        for (int i = 0; i < algorithms.length; i++) {
-//            for( Double[] param : param_map.get(algorithms[i])){
-//                HashMap<String, Double> params = new HashMap<>();
-//                params.put("SA_initial_temperature", param[0]);
-//                params.put("SA_cooling_factor", param[1]);
-//                params.put("GA_population", param[2]);
-//                params.put("GA_mate_number", param[3]);
-//                params.put("GA_mutate_number", param[4]);
-//                params.put("MIMIC_samples", param[5]);
-//                params.put("MIMIC_to_keep", param[6]);
-//                for (int j = 0; j < N.length; j++) {
-//                    for (int l = 0; l < num_runs; l++) {
-//                        new Analyze_Optimization_Test(
-//                                "continuous_peaks",
-//                                algorithms[i],
-//                                iterations[i],
-//                                params,
-//                                N[j],
-//                                N[j] / 5,
-//                                other_params,
-//                                l
-//                        ).start();
-//                    }
-//                }
-//            }
-//        }
+        N = new int[]{50};
+        iterations = new int[]{5000, 5000, 5000, 5000};
+        for (int i = 0; i < algorithms.length; i++) {
+            for( Double[] param : param_map.get(algorithms[i])){
+                HashMap<String, Double> params = new HashMap<>();
+                params.put("SA_initial_temperature", param[0]);
+                params.put("SA_cooling_factor", param[1]);
+                params.put("GA_population", param[2]);
+                params.put("GA_mate_number", param[3]);
+                params.put("GA_mutate_number", param[4]);
+                params.put("MIMIC_samples", param[5]);
+                params.put("MIMIC_to_keep", param[6]);
+                for (int j = 0; j < N.length; j++) {
+                    for (int l = 0; l < num_runs; l++) {
+                        new Analyze_Optimization_Test(
+                                "continuous_peaks",
+                                algorithms[i],
+                                iterations[i],
+                                params,
+                                N[j],
+                                N[j] / 5,
+                                other_params,
+                                l
+                        ).start();
+                    }
+                }
+            }
+        }
 
         // Flip Flop
 
@@ -615,8 +615,6 @@ public class OptimizationTest {
                 }
             }
         }
-
-
         System.out.println("Finished !");
     }
 }
