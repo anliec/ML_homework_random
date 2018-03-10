@@ -99,9 +99,9 @@ public class AbaloneTestStarcraft implements Runnable{
 //        hiddenLayerSizes.add(new Integer[] {10});
 //        hiddenLayerSizes.add(new Integer[] {15});
 //        hiddenLayerSizes.add(new Integer[] {25});
-        hiddenLayerSizes.add(new Integer[] {35});
+//        hiddenLayerSizes.add(new Integer[] {35});
 //        hiddenLayerSizes.add(new Integer[] {20, 10});
-//        hiddenLayerSizes.add(new Integer[] {30, 10});
+        hiddenLayerSizes.add(new Integer[] {30, 10});
 
 //        int count=0;
 
