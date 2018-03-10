@@ -95,13 +95,13 @@ public class AbaloneTestStarcraft implements Runnable{
 
         LinkedList<Integer[]> hiddenLayerSizes = new LinkedList<>();
 //        hiddenLayerSizes.add(new Integer[] {});
-        hiddenLayerSizes.add(new Integer[] {5});
+//        hiddenLayerSizes.add(new Integer[] {5});
 //        hiddenLayerSizes.add(new Integer[] {10});
         hiddenLayerSizes.add(new Integer[] {15});
 //        hiddenLayerSizes.add(new Integer[] {25});
-        hiddenLayerSizes.add(new Integer[] {35});
+//        hiddenLayerSizes.add(new Integer[] {35});
 //        hiddenLayerSizes.add(new Integer[] {20, 10});
-        hiddenLayerSizes.add(new Integer[] {30, 10});
+//        hiddenLayerSizes.add(new Integer[] {30, 10});
 
 //        int count=0;
 
@@ -287,6 +287,7 @@ public class AbaloneTestStarcraft implements Runnable{
                 i=0;
                 while (y_train_sc.hasNext()){
                     y_train_labels[i] = Double.parseDouble(y_train_sc.next());
+                    assert y_train_labels[i] == 0.0 || y_train_labels[i] == 1.0;
                     i++;
                 }
                 assert i == outputLayer;
@@ -304,6 +305,10 @@ public class AbaloneTestStarcraft implements Runnable{
         // convert linked list to array
         Instance[] instances_array = new Instance[instances.size()];
         instances_array = instances.toArray(instances_array);
+
+//        for(Instance i : instances_array){
+//            assert i.getLabel().getData().sum() == 1.0;
+//        }
 
         return instances_array;
     }
