@@ -28,3 +28,6 @@ OptimizationResults/*
 *.dvi
 *.out
 *.gz
+*~
+*.old
+*.lyx
